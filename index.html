@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件数据处理工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- ====== 背景装饰 ====== -->
+<div class="bg-decoration">
+    <div class="bg-grid"></div>
+    <div class="bg-gradient bg-gradient-1"></div>
+    <div class="bg-gradient bg-gradient-2"></div>
+</div>
+
+<!-- ====== 左侧边栏 ====== -->
+<aside class="sidebar" id="sidebar">
+    <!-- Logo区 -->
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect width="28" height="28" rx="7" fill="url(#logoGrad)"/>
+                    <path d="M7 14L13 8L19 14L13 20Z" fill="rgba(255,255,255,0.9)"/>
+                    <path d="M13 14L19 8L25 14L19 20Z" fill="rgba(255,255,255,0.45)"/>
+                    <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#6B9BD1"/><stop offset="1" stop-color="#8E7BB5"/></linearGradient></defs>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <span class="logo-title">DataFlow</span>
+                <span class="logo-subtitle">智能数据处理平台</span>
+            </div>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" title="收起侧栏">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+    </div>
+
+    <!-- 导航菜单 -->
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <span class="nav-section-label">基础功能</span>
+            <button class="tab-btn active" data-tab="clean">
+                <span class="tab-icon-wrap tab-icon-blue">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4A90D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </span>
+                <span class="tab-label">数据清洗</span>
+            </button>
+            <button class="tab-btn" data-tab="filter">
+                <span class="tab-icon-wrap tab-icon-green">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5BA55B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </span>
+                <span class="tab-label">自动筛选</span>
+            </button>
+            <button class="tab-btn" data-tab="combined">
+                <span class="tab-icon-wrap tab-icon-purple">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8B6BB3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                </span>
+                <span class="tab-label">清洗与筛选</span>
+            </button>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-section-label">高级处理</span>
+            <button class="tab-btn" data-tab="split">
+                <span class="tab-icon-wrap tab-icon-orange">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D4915A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                </span>
+                <span class="tab-label">按列拆分</span>
+            </button>
+            <button class="tab-btn" data-tab="split-filter">
+                <span class="tab-icon-wrap tab-icon-cyan">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4BA3A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                </span>
+                <span class="tab-label">拆分并筛选</span>
+            </button>
+            <button class="tab-btn" data-tab="split-filter-v2">
+                <span class="tab-icon-wrap tab-icon-pink">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C87B9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                </span>
+                <span class="tab-label">医药精细化</span>
+                <span class="tab-badge-new">NEW</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 底部状态 -->
+    <div class="sidebar-bottom">
+        <div class="system-status">
+            <span class="status-indicator"></span>
+            <span>系统运行正常</span>
+        </div>
+        <div class="version-tag">v17 Dashboard</div>
+    </div>
+</aside>
+
+<!-- ====== 主内容区域 ====== -->
+<main class="main-content">
+
+    <!-- ========== 数据清洗面板 ========== -->
+    <section class="panel active" data-panel="clean">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">数据清洗</h2>
+                <p class="panel-subheading">提取纯数值ID，去除杂质，输出干净数据</p>
+            </div>
+            <span class="feature-badge feature-basic">基础工具</span>
+        </header>
+
+        <article class="workspace-card">
+            <div id="clean-upload-zone" class="upload-area">
+                <input type="file" id="clean-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传需要清洗的文件</p>
+                <p class="upload-hint-text">支持 .csv / .xlsx / .xls 格式，可多选文件（含多Sheet自动拆分）</p>
+            </div>
+
+            <div id="clean-file-list" class="file-stack"></div>
+
+            <button id="clean-btn" class="action-button action-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                开始清洗
+            </button>
+
+            <div id="clean-error" class="alert-box alert-error"></div>
+            <div id="clean-result" class="output-area"></div>
+        </article>
+    </section>
+
+    <!-- ========== 自动筛选面板 ========== -->
+    <section class="panel" data-panel="filter">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">自动筛选</h2>
+                <p class="panel-subheading">与白名单精确匹配，输出通过/未通过名单</p>
+            </div>
+            <span class="feature-badge feature-smart">智能匹配</span>
+        </header>
+
+        <article class="workspace-card">
+            <div id="filter-upload-zone" class="upload-area">
+                <input type="file" id="filter-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传待筛选的文件</p>
+                <p class="upload-hint-text">支持 .csv / .xlsx / .xls 格式，可多选文件（含多Sheet自动拆分）</p>
+            </div>
+
+            <div id="filter-file-list" class="file-stack"></div>
+
+            <!-- 白名单管理 -->
+            <div class="config-block">
+                <label class="config-label">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    白名单对照表管理
+                </label>
+                <div style="margin-bottom:10px;" id="whitelist-status-bar"></div>
+                <div id="whitelist-upload-zone" class="upload-area upload-area-compact">
+                    <input type="file" id="whitelist-file-input" accept=".csv,.xlsx,.xls" hidden>
+                    <p class="upload-compact-text">上传新的白名单对照表以更新系统内置白名单</p>
+                    <p class="upload-hint-text-sm">第一列应包含SKU编号，更新后持久保存直到下次替换</p>
+                </div>
+                <div id="whitelist-file-info" class="file-info-msg"></div>
+            </div>
+
+            <button id="filter-btn" class="action-button action-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                开始筛选
+            </button>
+
+            <div id="filter-error" class="alert-box alert-error"></div>
+            <div id="filter-result" class="output-area"></div>
+        </article>
+    </section>
+
+    <!-- ========== 清洗→筛选 组合面板 ========== -->
+    <section class="panel" data-panel="combined">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">清洗与筛选</h2>
+                <p class="panel-subheading">一键完成清洗 + 白名单匹配 + 二级品类筛选</p>
+            </div>
+            <span class="feature-badge feature-combo">组合模式</span>
+        </header>
+
+        <article class="workspace-card">
+            <!-- 步骤条 -->
+            <div class="step-tracker">
+                <div class="step-item step-active">
+                    <span class="step-num">1</span>
+                    <span class="step-name">上传文件</span>
+                </div>
+                <div class="step-connector"><div class="step-line"></div></div>
+                <div class="step-item">
+                    <span class="step-num">2</span>
+                    <span class="step-name">确认Sheet拆分</span>
+                </div>
+                <div class="step-connector"><div class="step-line"></div></div>
+                <div class="step-item">
+                    <span class="step-num">3</span>
+                    <span class="step-name">清洗并筛选</span>
+                </div>
+            </div>
+
+            <div id="combined-upload-zone" class="upload-area">
+                <input type="file" id="combined-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传原始文件</p>
+                <p class="upload-hint-text">支持多Sheet Excel → 自动拆分每个Sheet独立处理；也支持CSV和多文件批量上传</p>
+            </div>
+
+            <div id="combined-file-list" class="file-stack"></div>
+
+            <!-- Sheet预览 -->
+            <div id="sheet-preview-section" class="sheet-preview-box" style="display:none;">
+                <div class="sheet-preview-title">检测到以下多Sheet文件，将按Sheet自动拆分后分别处理：</div>
+                <div id="sheet-preview-list" class="sheet-preview-items"></div>
+                <div class="sheet-preview-note">每个 Sheet 的数据将保持原始内容不变，仅做拆分动作，然后各自独立进行清洗和筛选。</div>
+            </div>
+
+            <!-- 白名单管理 -->
+            <div class="config-block">
+                <label class="config-label">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    白名单对照表管理（在此处可直接更新）
+                </label>
+                <div style="margin-bottom:10px;" id="combined-wl-status-bar"></div>
+                <div id="combined-wl-upload-zone" class="upload-area upload-area-compact">
+                    <input type="file" id="combined-wl-file-input" accept=".csv,.xlsx,.xls" hidden>
+                    <p class="upload-compact-text">上传新的全量SKU白名单表格以替换系统内置版本</p>
+                    <p class="upload-hint-text-sm">更新后将持久保存到系统中，直到你下一次上传新版本才替换</p>
+                </div>
+                <div id="combined-wl-file-info" class="file-info-msg"></div>
+            </div>
+
+            <button id="combined-btn" class="action-button action-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                开始清洗并筛选
+            </button>
+
+            <div id="combined-error" class="alert-box alert-error"></div>
+            <div id="combined-result" class="output-area"></div>
+        </article>
+    </section>
+
+    <!-- ========== 按列拆分面板 ========== -->
+    <section class="panel" data-panel="split">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">按列拆分</h2>
+                <p class="panel-subheading">京东门店ID / SKUID 分离提取，精细化分类输出</p>
+            </div>
+            <span class="feature-badge feature-split">智能识别</span>
+        </header>
+
+        <article class="workspace-card">
+            <div class="info-card info-card-default">
+                <strong>按列拆分 — 京东门店ID / SKUID 分离提取</strong>
+                <ol>
+                    <li>上传包含「京东门店ID」和「京东SKUID」列的文件</li>
+                    <li>按 Sheet 自动拆分（多Sheet Excel）</li>
+                    <li>每个 Sheet 内识别并分离两列数据</li>
+                    <li><strong>精细化分类</strong>：若含 C列/I列 新增/剔除标记，自动输出 4 个分类文件</li>
+                </ol>
+            </div>
+
+            <div id="split-upload-zone" class="upload-area">
+                <input type="file" id="split-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传需要拆分的文件</p>
+                <p class="upload-hint-text">支持 .csv / .xlsx / .xls 格式，可多选，多Sheet Excel 自动拆分</p>
+            </div>
+
+            <div id="split-file-list" class="file-stack"></div>
+
+            <div id="split-sheet-preview-section" class="sheet-preview-box" style="display:none;">
+                <div class="sheet-preview-title">检测到多Sheet文件，将按Sheet自动拆分后分别处理：</div>
+                <div id="split-sheet-preview-list" class="sheet-preview-items"></div>
+            </div>
+
+            <button id="split-btn" class="action-button action-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                开始按列拆分
+            </button>
+
+            <div id="split-error" class="alert-box alert-error"></div>
+            <div id="split-result" class="output-area"></div>
+        </article>
+    </section>
+
+    <!-- ========== 拆分→筛选 面板 ========== -->
+    <section class="panel" data-panel="split-filter">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">拆分并筛选</h2>
+                <p class="panel-subheading">门店ID直接输出 + SKUID品类策略筛选</p>
+            </div>
+            <span class="feature-badge feature-strategy">策略筛选</span>
+        </header>
+
+        <article class="workspace-card">
+            <div class="info-card info-card-warn">
+                <strong>拆分+筛选 — 门店ID直接输出 + SKUID品类策略筛选</strong>
+                <ol>
+                    <li><strong>按列拆分</strong>：识别并分离门店ID和SKUID两列</li>
+                    <li><strong>门店ID</strong>：直接输出（不参与筛选）</li>
+                    <li><strong>SKUID筛选</strong>：白名单匹配 → 查询三级分类 → 按8月品类券策略筛选</li>
+                </ol>
+                <p style="margin-top:10px; font-size:12.5px;">
+                    输出 3 个文件：<b>门店ID</b> / <b class="text-success">筛选通过SKUID</b> / <b class="text-danger">筛选未通过SKUID</b>
+                </p>
+            </div>
+
+            <div id="sf-upload-zone" class="upload-area">
+                <input type="file" id="sf-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传需要拆分并筛选的文件</p>
+                <p class="upload-hint-text">支持 .csv / .xlsx / .xls 格式，可多选，多Sheet Excel 自动拆分</p>
+            </div>
+
+            <div id="sf-file-list" class="file-stack"></div>
+
+            <div id="sf-sheet-preview-section" class="sheet-preview-box" style="display:none;">
+                <div class="sheet-preview-title">检测到多Sheet文件，将按Sheet自动拆分后分别处理：</div>
+                <div id="sf-sheet-preview-list" class="sheet-preview-items"></div>
+            </div>
+
+            <div class="data-status-bar" id="sf-status-bar">
+                <span class="status-chip">白名单：<strong id="sf-wl-count">加载中...</strong></span>
+                <span class="status-chip">8月品类券策略类目：<strong id="sf-cat8-count">加载中...</strong></span>
+            </div>
+
+            <button id="sf-btn" class="action-button action-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                开始拆分并筛选
+            </button>
+
+            <div id="sf-error" class="alert-box alert-error"></div>
+            <div id="sf-result" class="output-area"></div>
+        </article>
+    </section>
+
+    <!-- ========== 医药精细化筛选面板 v16 ========== -->
+    <section class="panel" data-panel="split-filter-v2">
+        <header class="panel-topbar">
+            <div class="panel-info">
+                <h2 class="panel-heading">医药精细化筛选</h2>
+                <p class="panel-subheading">v16 增强版 — 5种精细化输出，SKUID新增项医药品类二次过滤</p>
+            </div>
+            <span class="feature-badge feature-medical">医药专项</span>
+        </header>
+
+        <article class="workspace-card">
+            <div class="info-card info-card-medical">
+                <strong>医药精细化拆分+筛选 — v16 增强版（5种输出）</strong>
+                <ol>
+                    <li><strong>按列拆分</strong>：识别门店ID和SKUID，自动区分新增/剔除</li>
+                    <li><strong>门店ID</strong>：新增/剔除均直接输出，不参与筛选</li>
+                    <li><strong>SKUID剔除</strong>：直接输出，不做任何筛选</li>
+                    <li><strong>SKUID新增</strong>：匹配品类映射表 → 医药类需三级分类匹配(69个) → 非医药直接通过</li>
+                </ol>
+                <p style="margin-top:10px; font-size:12.5px;">
+                    输出 5 个文件：
+                    <b>门店ID新增</b> /
+                    <b style="color:#0891b2;">门店ID剔除</b> /
+                    <b style="color:#d97706;">SKUID剔除</b> /
+                    <b class="text-success">SKUID新增筛选通过</b> /
+                    <b class="text-danger">SKUID新增筛选未通过</b>
+                </p>
+            </div>
+
+            <div id="sf2-upload-zone" class="upload-area">
+                <input type="file" id="sf2-file-input" accept=".csv,.xlsx,.xls" multiple hidden>
+                <div class="upload-artwork">
+                    <div class="upload-circle-bg"></div>
+                    <div class="upload-circle-ring"></div>
+                    <svg class="upload-cloud-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="upload-main-text">点击或拖拽上传需要拆分并筛选的文件</p>
+                <p class="upload-hint-text">支持 .csv / .xlsx / .xls 格式，可多选，多Sheet Excel 自动拆分</p>
+            </div>
+
+            <div id="sf2-file-list" class="file-stack"></div>
+
+            <div class="data-status-bar data-status-bar-medical" id="sf2-status-bar">
+                <span class="status-chip">SKU品类映射表：<strong id="sf2-map-count">加载中...</strong></span>
+                <span class="status-chip">医药品类策略表：<strong id="sf2-med-count">加载中...</strong></span>
+            </div>
+
+            <button id="sf2-btn" class="action-button action-accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                开始医药精细化筛选
+            </button>
+
+            <div id="sf2-error" class="alert-box alert-error"></div>
+            <div id="sf2-result" class="output-area"></div>
+        </article>
+    </section>
+
+</main>
+
+<!-- 批量下载进度浮窗 -->
+<div id="batch-progress-overlay" style="display:none;">
+    <div class="progress-modal">
+        <div class="progress-modal-header">正在打包下载</div>
+        <div class="progress-track">
+            <div class="progress-fill" id="batch-progress-fill"></div>
+        </div>
+        <div class="progress-modal-body" id="batch-progress-text">准备中...</div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
